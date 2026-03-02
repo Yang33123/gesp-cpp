@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Practice 1 - 两数相加</title>
+<link rel="stylesheet" href="../../../assets/style.css">
+
+<style>
+textarea {
+  width: 100%;
+  height: 200px;
+  font-family: monospace;
+  margin-top: 10px;
+}
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.output {
+  background: #111;
+  color: #0f0;
+  padding: 10px;
+  margin-top: 10px;
+  min-height: 50px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+</style>
+
+</head>
+<body>
+
+<div class="layout">
+<div class="sidebar">
+<h2>Practice 1</h2>
+<a href="../index.html">返回 Level 1</a>
+</div>
+
+<div class="content">
+
+<h1>练习 1：两数相加</h1>
+
+<h2>📘 题目描述</h2>
+<p>输入两个整数，输出它们的和。</p>
+
+<h2>📥 示例输入</h2>
+<pre>3 5</pre>
+
+<h2>📤 示例输出</h2>
+<pre>8</pre>
+
+<h2>💻 修改代码并运行：</h2>
+
+<textarea id="code">
+#include <iostream>
+using namespace std;
+
+int main() {
+    int a, b;
+    cin >> a >> b;
+    cout << a + b;
+    return 0;
+}
+</textarea>
+
+<br>
+<button onclick="runCode()">▶ 运行代码</button>
+
+<h2>📟 输出结果：</h2>
+<div class="output" id="output"></div>
+
+</div>
+</div>
+
+<script>
+async function runCode() {
+  const code = document.getElementById("code").value;
+  const outputEl = document.getElementById("output");
+
+  outputEl.innerText = "运行中...";
+
+  try {
+    const response = await fetch("/api/run", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        code: code,
+        input: "3 5"
+      })
+    });
+
+    const result = await response.json();
+
+    outputEl.innerText = result.output || "无输出";
+
+  } catch (error) {
+    outputEl.innerText = "执行失败";
+  }
+}
+</script>
+
+</body>
+</html>

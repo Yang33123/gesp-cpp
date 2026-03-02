@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lesson 10 - 综合项目</title>
+<link rel="stylesheet" href="../../../assets/style.css">
+</head>
+<body>
+
+<div class="layout">
+<div class="sidebar">
+<h2>Lesson 10</h2>
+<a href="../index.html">返回 Level 1</a>
+</div>
+
+<div class="content">
+
+<h1>Lesson 10：成绩平均分计算器</h1>
+
+<h2>🎯 项目目标</h2>
+<p>输入三门成绩，计算平均分。</p>
+
+<div class="code-box">
+#include &lt;iostream&gt;
+using namespace std;
+
+int main(){
+    int a,b,c;
+    cin >> a >> b >> c;
+    double avg = (a + b + c) / 3.0;
+    cout << "Average: " << avg;
+    return 0;
+}
+</div>
+
+<h2>为什么除以 3.0？</h2>
+<p>为了得到小数结果，避免整数除法。</p>
+
+</div>
+</div>
+</body>
+</html>
