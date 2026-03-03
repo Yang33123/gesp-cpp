@@ -19,17 +19,27 @@ export default async function handler(req, res) {
             content: code
           }
         ],
-        stdin: input
+        stdin: input || ""
       })
     });
 
     const result = await response.json();
 
+    // 防止 undefined 报错
+    const output =
+      result?.run?.stdout ||
+      result?.run?.stderr ||
+      "No output";
+
     res.status(200).json({
-      output: result.run.output
+      output: output
     });
 
   } catch (error) {
-    res.status(500).json({ error: "Execution failed" });
+    console.error(error);
+    res.status(500).json({
+      error: "Server error",
+      detail: error.message
+    });
   }
 }
