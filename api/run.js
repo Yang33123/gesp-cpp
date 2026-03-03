@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { code, input } = req.body;
 
   try {
-    const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+    const response = await fetch("https://piston.rs/api/v2/execute", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
