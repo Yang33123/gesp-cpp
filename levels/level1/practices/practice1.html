@@ -78,30 +78,45 @@ int main() {
 
 <script>
 async function runCode() {
-  const code = document.getElementById("code").value;
-  const outputEl = document.getElementById("output");
 
-  outputEl.innerText = "运行中...";
+    const code = document.getElementById("code").value;
+    const outputBox = document.getElementById("output");
 
-  try {
-    const response = await fetch("/api/run", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        code: code,
-        input: "3 5"
-      })
-    });
+    outputBox.innerText = "Running...";
 
-    const result = await response.json();
+    try {
 
-    outputEl.innerText = result.output || "无输出";
+        const response = await fetch("/api/run", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                code: code,
+                input: ""
+            })
+        });
 
-  } catch (error) {
-    outputEl.innerText = "执行失败";
-  }
+        const result = await response.json();
+
+        console.log("server result:", result);
+
+        if (result.run && result.run.stdout) {
+            outputBox.innerText = result.run.stdout;
+        } 
+        else if (result.run && result.run.stderr) {
+            outputBox.innerText = result.run.stderr;
+        } 
+        else {
+            outputBox.innerText = "No output";
+        }
+
+    } catch (error) {
+
+        outputBox.innerText = "Execution failed";
+        console.error(error);
+
+    }
 }
 </script>
 

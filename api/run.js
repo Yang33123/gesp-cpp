@@ -25,21 +25,16 @@ export default async function handler(req, res) {
 
     const result = await response.json();
 
-    // 防止 undefined 报错
-    const output =
-      result?.run?.stdout ||
-      result?.run?.stderr ||
-      "No output";
+    console.log("Piston result:", result);
 
-    res.status(200).json({
-      output: output
-    });
+    res.status(200).json(result);
 
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error("Server error:", err);
+
     res.status(500).json({
       error: "Server error",
-      detail: error.message
+      message: err.message
     });
   }
 }
