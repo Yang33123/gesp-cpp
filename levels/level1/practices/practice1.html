@@ -54,6 +54,8 @@ button {
 <pre>8</pre>
 
 <h2>💻 修改代码并运行：</h2>
+<h3>程序输入：</h3>
+<textarea id="input" placeholder="在这里输入程序需要的输入，例如：3 5"></textarea>
 
 <textarea id="code">
 #include <iostream>
@@ -94,7 +96,7 @@ async function runCode() {
             },
             body: JSON.stringify({
                 code: code,
-                input: ""
+                input: document.getElementById("input").value
             })
         });
 
