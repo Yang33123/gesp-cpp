@@ -6,35 +6,70 @@
 <link rel="stylesheet" href="../../../assets/style.css">
 
 <style>
+
 textarea {
-  width: 100%;
-  height: 200px;
-  font-family: monospace;
-  margin-top: 10px;
+  width:100%;
+  height:220px;
+  font-family:monospace;
 }
-button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  background: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+
+button{
+  padding:10px 20px;
+  margin-top:10px;
+  background:#007bff;
+  color:white;
+  border:none;
+  cursor:pointer;
 }
-.output {
-  background: #111;
-  color: #0f0;
-  padding: 10px;
-  margin-top: 10px;
-  min-height: 50px;
-  font-family: monospace;
-  white-space: pre-wrap;
+
+/* 终端窗口 */
+
+#terminalOverlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
 }
+
+#terminal{
+  width:700px;
+  height:450px;
+  background:#111;
+  color:#00ff88;
+  font-family:monospace;
+  padding:20px;
+  overflow:auto;
+  border-radius:8px;
+}
+
+#terminalInput{
+  width:100%;
+  background:black;
+  color:#00ff88;
+  border:none;
+  outline:none;
+  font-family:monospace;
+  margin-top:10px;
+}
+
+.closeBtn{
+  margin-top:10px;
+  background:#444;
+}
+
 </style>
 
 </head>
+
 <body>
 
 <div class="layout">
+
 <div class="sidebar">
 <h2>Practice 1</h2>
 <a href="../index.html">返回 Level 1</a>
@@ -44,97 +79,145 @@ button {
 
 <h1>练习 1：两数相加</h1>
 
-<h2>📘 题目描述</h2>
-<p>输入两个整数，输出它们的和。</p>
+<h2>题目描述</h2>
 
-<h2>📥 示例输入</h2>
-<pre>3 5</pre>
+<p>
+输入两个整数，输出它们的和。
+</p>
 
-<h2>📤 示例输出</h2>
-<pre>8</pre>
+<h3>示例输入</h3>
 
-<h2>💻 修改代码并运行：</h2>
-<h3>程序输入：</h3>
-<textarea id="input" placeholder="在这里输入程序需要的输入，例如：3 5"></textarea>
+<pre>
+3 5
+</pre>
+
+<h3>示例输出</h3>
+
+<pre>
+8
+</pre>
+
+<h2>代码编辑器</h2>
 
 <textarea id="code">
+
 #include <iostream>
 using namespace std;
 
-int main() {
-    int a, b;
+int main(){
+
+    int a,b;
+
     cin >> a >> b;
+
     cout << a + b;
+
     return 0;
 }
+
 </textarea>
 
 <br>
-<button onclick="runCode()">▶ 运行代码</button>
 
-<h2>📟 输出结果：</h2>
-<div class="output" id="output"></div>
+<button onclick="runCode()">▶ Run</button>
 
 </div>
+
 </div>
+
+
+<!-- Terminal -->
+
+<div id="terminalOverlay">
+
+<div id="terminal">
+
+<div id="terminalOutput">
+C++ Program Console
+----------------------------------
+</div>
+
+<input id="terminalInput" placeholder="输入程序需要的输入，例如：3 5">
+
+<br>
+
+<button onclick="executeProgram()">Run Program</button>
+
+<button class="closeBtn" onclick="closeTerminal()">Close</button>
+
+</div>
+
+</div>
+
+
 
 <script>
 
-async function runCode() {
+let programCode = "";
 
-    const code = document.getElementById("code").value;
-    const outputBox = document.getElementById("output");
+function runCode(){
 
-    outputBox.innerText = "Running...";
+    programCode = document.getElementById("code").value;
 
-    try {
+    document.getElementById("terminalOverlay").style.display="flex";
 
-        const response = await fetch("/api/run", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
+    document.getElementById("terminalOutput").innerText =
+`C++ Program Console
+----------------------------------
+程序等待输入
+`;
+}
+
+
+
+async function executeProgram(){
+
+    const input = document.getElementById("terminalInput").value;
+
+    const terminal = document.getElementById("terminalOutput");
+
+    terminal.innerText += "\n> " + input + "\nRunning...\n";
+
+    try{
+
+        const response = await fetch("/api/run",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
             },
-            body: JSON.stringify({
-                code: code,
-                input: document.getElementById("input").value
+
+            body:JSON.stringify({
+
+                code:programCode,
+                input:input
+
             })
+
         });
 
-        const text = await response.text();
+        const result = await response.json();
 
-        console.log("raw server:", text);
-
-        let result;
-
-        try {
-            result = JSON.parse(text);
-        } catch (e) {
-            outputBox.innerText = "Server returned invalid JSON";
-            console.error("JSON parse error:", text);
-            return;
-        }
-
-        console.log("server result:", result);
-
-        if (result.run && result.run.stdout) {
-            outputBox.innerText = result.run.stdout;
-        }
-        else if (result.run && result.run.stderr) {
-            outputBox.innerText = result.run.stderr;
-        }
-        else if (result.output) {
-            outputBox.innerText = result.output;
-        }
-        else {
-            outputBox.innerText = "No output";
-        }
-
-    } catch (error) {
-
-        outputBox.innerText = "Execution failed";
-        console.error(error);
+        terminal.innerText += "\n" + (result.output || "No output");
 
     }
+
+    catch(err){
+
+        terminal.innerText += "\nExecution failed";
+
+        console.error(err);
+
+    }
+
+}
+
+
+
+function closeTerminal(){
+
+    document.getElementById("terminalOverlay").style.display="none";
 
 }
 
